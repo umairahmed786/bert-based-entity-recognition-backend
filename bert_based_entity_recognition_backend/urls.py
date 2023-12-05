@@ -16,10 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from tokenize import tokenize
-
+from .tokenize import UserAccessView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('tokenize',tokenize,name="tokenize")
+    path('tokenize',UserAccessView.as_view(), name='tokenize')
+
 ]
