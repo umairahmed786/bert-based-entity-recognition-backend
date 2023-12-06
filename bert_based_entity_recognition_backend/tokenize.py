@@ -14,6 +14,10 @@
 from django.views.decorators.csrf import csrf_exempt
 from django.views import View
 from django.http import JsonResponse
+import pickle
+from transformers import pipeline
+from transformers import BertTokenizerFast
+import json
 
 class UserAccessView(View):
     http_method_names = ["post"]  
@@ -29,6 +33,12 @@ class UserAccessView(View):
 
     def tokenize(self, request):
         if request.method == "POST":
-            return JsonResponse({"message": "Tokenization successful"})
+            data = json.loads(request.body)
+            text = data.get("text")
+            test_pickle = pickle.load(open("F:\\bert-based-entity-recognition-backend\\bert_based_entity_recognition_backend\\model.pkl", 'rb'))
+            tokenizer = BertTokenizerFast.from_pretrained("bert-base-uncased")
+            nlp = pipeline("ner", model=test_pickle, tokenizer=tokenizer)
+            ner_results = nlp(text)
+            return JsonResponse({"message": json.dumps(str(ner_results))})
 
 
